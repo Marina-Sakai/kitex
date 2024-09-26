@@ -71,6 +71,7 @@ func RegisterDDLStop(f DDLStopFunc) {
 // if it exists calculate handler time consumed by RPC_PERSIST_INGRESS_START_TIME and current time,
 // if handler cost > ddl remain time, then do not execute retry.
 func ddlStop(ctx context.Context, policy StopPolicy) (bool, string) {
+	klog.Noticef("??? ddlStop ???, DDLStop: %v", policy.DDLStop)
 	if !policy.DDLStop {
 		return false, ""
 	}
@@ -78,18 +79,19 @@ func ddlStop(ctx context.Context, policy StopPolicy) (bool, string) {
 		klog.Warnf("enable ddl stop for retry, but no ddlStopFunc is registered")
 		return false, ""
 	}
-	klog.Noticef("ddlStop will be executed!")
+	klog.Notice("ddlStop will be executed!")
 	return ddlStopFunc(ctx, policy)
 }
 
 func chainStop(ctx context.Context, policy StopPolicy) (bool, string) {
+	klog.Noticef("???? chainStop ????, DisableChainStop: %v", policy.DisableChainStop)
 	if policy.DisableChainStop {
 		return false, ""
 	}
 	if !IsRemoteRetryRequest(ctx) {
 		return false, ""
 	}
-	klog.Noticef("chainStop happens!")
+	klog.Notice("chainStop happens!")
 	return true, "chain stop retry"
 }
 
