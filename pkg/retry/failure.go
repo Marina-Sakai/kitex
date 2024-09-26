@@ -19,6 +19,7 @@ package retry
 import (
 	"context"
 	"fmt"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"time"
 
 	"github.com/bytedance/gopkg/lang/fastrand"
@@ -260,6 +261,7 @@ type fixedBackOff struct {
 
 // Wait implements the BackOff interface.
 func (p *fixedBackOff) Wait(callTimes int) {
+	klog.Noticef("FixedBackOff wait time: %d", callTimes)
 	time.Sleep(time.Duration(p.fixMS) * time.Millisecond)
 }
 

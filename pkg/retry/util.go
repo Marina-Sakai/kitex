@@ -78,6 +78,7 @@ func ddlStop(ctx context.Context, policy StopPolicy) (bool, string) {
 		klog.Warnf("enable ddl stop for retry, but no ddlStopFunc is registered")
 		return false, ""
 	}
+	klog.Noticef("ddlStop will be executed!")
 	return ddlStopFunc(ctx, policy)
 }
 
@@ -88,6 +89,7 @@ func chainStop(ctx context.Context, policy StopPolicy) (bool, string) {
 	if !IsRemoteRetryRequest(ctx) {
 		return false, ""
 	}
+	klog.Noticef("chainStop happens!")
 	return true, "chain stop retry"
 }
 
@@ -101,6 +103,7 @@ func circuitBreakerStop(ctx context.Context, policy StopPolicy, cbC *cbContainer
 	if sample < cbMinSample || errRate < policy.CBPolicy.ErrorRate {
 		return false, ""
 	}
+	klog.Noticef("circuitBreakerStop errRate=%0.3f!", errRate)
 	return true, fmt.Sprintf("retry circuit break, errRate=%0.3f, sample=%d", errRate, sample)
 }
 
