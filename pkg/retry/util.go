@@ -79,19 +79,21 @@ func ddlStop(ctx context.Context, policy StopPolicy) (bool, string) {
 		klog.Warnf("enable ddl stop for retry, but no ddlStopFunc is registered")
 		return false, ""
 	}
-	klog.Notice("ddlStop will be executed!")
+	klog.Noticef("ddlStop will be executed!")
 	return ddlStopFunc(ctx, policy)
 }
 
 func chainStop(ctx context.Context, policy StopPolicy) (bool, string) {
 	klog.Noticef("???? chainStop ????, DisableChainStop: %v", policy.DisableChainStop)
 	if policy.DisableChainStop {
+		klog.Noticef("DisableChainStop TRUE")
 		return false, ""
 	}
 	if !IsRemoteRetryRequest(ctx) {
+		klog.Noticef("Not IsRemoteRetryRequest")
 		return false, ""
 	}
-	klog.Notice("chainStop happens!")
+	klog.Noticef("chainStop happens!")
 	return true, "chain stop retry"
 }
 
