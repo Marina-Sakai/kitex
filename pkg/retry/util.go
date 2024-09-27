@@ -84,7 +84,7 @@ func ddlStop(ctx context.Context, policy StopPolicy) (bool, string) {
 }
 
 func chainStop(ctx context.Context, policy StopPolicy) (bool, string) {
-	klog.Infof("???? chainStop ????, DisableChainStop: %v", policy.DisableChainStop)
+	klog.Infof(":))) ???? chainStop ????, DisableChainStop: %v", policy.DisableChainStop)
 	if policy.DisableChainStop {
 		klog.Infof("DisableChainStop TRUE")
 		return false, ""
