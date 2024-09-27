@@ -151,12 +151,14 @@ func (r *mixedRetryer) Do(ctx context.Context, rpcCall RPCCallFunc, firstRI rpci
 		select {
 		case <-timer.C:
 			// backup retry
+			klog.Noticef("Backup retry, call No.%d", callCount)
 			if _, ok := r.ShouldRetry(ctx, nil, callCount, req, cbKey); ok && callCount < retryTimes+1 {
 				doCall = true
 				timer.Reset(retryDelay)
 			}
 		case res := <-callDone:
 			// result retry
+			klog.Noticef("Failure retry, call No.%d", callCount)
 			if respOp, ok := ctx.Value(CtxRespOp).(*int32); ok {
 				// must set as OpNo, or the new resp cannot be decoded
 				atomic.StoreInt32(respOp, OpNo)
