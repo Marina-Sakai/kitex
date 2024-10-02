@@ -2,10 +2,12 @@ module github.com/cloudwego/kitex
 
 go 1.13
 
+replace github.com/cloudwego/dynamicgo => github.com/Marina-Sakai/dynamicgo v0.0.0-20241002090505-60ab1216f62b
+
 require (
 	github.com/apache/thrift v0.13.0
 	github.com/bytedance/gopkg v0.0.0-20240711085056-a03554c296f8
-	github.com/bytedance/sonic v1.11.8
+	github.com/bytedance/sonic v1.12.0
 	github.com/cloudwego/configmanager v0.2.2
 	github.com/cloudwego/dynamicgo v0.2.9
 	github.com/cloudwego/fastpb v0.0.4
