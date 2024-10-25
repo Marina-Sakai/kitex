@@ -244,8 +244,10 @@ func (r *failureCommon) isRetryErr(ctx context.Context, err error, ri rpcinfo.RP
 		return true
 	}
 	if fp.isErrorRetry(ctx, err, ri) {
+		klog.Warnf("isErrorRetry TRUE %v", err.Error())
 		return true
 	}
+	klog.Warnf("isErrorRetry FALSE %v", err.Error())
 	return false
 }
 
