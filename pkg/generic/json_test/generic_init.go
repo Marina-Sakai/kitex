@@ -159,6 +159,85 @@ func newGenericServer(g generic.Generic, addr net.Addr, handler generic.Service)
 	return svr
 }
 
+type TestEnum int64
+
+const (
+	TestEnum_FIRST  TestEnum = 1
+	TestEnum_SECOND TestEnum = 2
+	TestEnum_THIRD  TestEnum = 3
+	TestEnum_FOURTH TestEnum = 4
+)
+
+type BaseElem struct {
+	A *int32 `thrift:"a,1,optional" frugal:"1,optional,i32" json:"a,omitempty"`
+}
+
+type BaseResp struct {
+	StatusMessage string            `thrift:"StatusMessage,1" frugal:"1,default,string" json:"StatusMessage"`
+	StatusCode    int32             `thrift:"StatusCode,2" frugal:"2,default,i32" json:"StatusCode"`
+	Extra         map[string]string `thrift:"Extra,3,optional" frugal:"3,optional,map<string:string>" json:"Extra,omitempty"`
+}
+
+type GenericResponse struct {
+	Vint64    int64               `thrift:"vint64,1" frugal:"1,default,i64" json:"vint64"`
+	Text      string              `thrift:"text,2" frugal:"2,default,string" json:"text"`
+	Nums      []int32             `thrift:"nums,3" frugal:"3,default,list<i32>" json:"nums"`
+	Token     string              `thrift:"token,4" frugal:"4,default,string" json:"token"`
+	Items     []string            `thrift:"items,5" frugal:"5,default,list<string>" json:"items"`
+	Version   int32               `thrift:"version,6" frugal:"6,default,i32" json:"version"`
+	HttpCode  int32               `thrift:"http_code,7" frugal:"7,default,i32" json:"http_code"`
+	Boo       []string            `thrift:"boo,8,optional" frugal:"8,optional,list<string>" json:"boo,omitempty"`
+	Tenum     TestEnum            `thrift:"tenum,9,optional" frugal:"9,optional,TestEnum" json:"tenum,omitempty"`
+	BaseElems []*BaseElem         `thrift:"baseElems,10,optional" frugal:"10,optional,list<base.BaseElem>" json:"base_elems,omitempty"`
+	Keys      []string            `thrift:"keys,11,optional" frugal:"11,optional,set<string>" json:"keys,omitempty"`
+	Values    map[int32]*BaseElem `thrift:"values,12,optional" frugal:"12,optional,map<i32:base.BaseElem>" json:"values,omitempty"`
+	BaseResp  *BaseResp           `thrift:"BaseResp,255,optional" frugal:"255,optional,base.BaseResp" json:"BaseResp,omitempty"`
+}
+
+func NewGenericResponse() *GenericResponse {
+	return &GenericResponse{
+
+		Boo: []string{
+			"far",
+			"boo",
+		},
+		Tenum: TestEnum_THIRD,
+		BaseElems: []*BaseElem{
+			&BaseElem{
+				A: &(&struct{ x int32 }{34}).x,
+			},
+			&BaseElem{
+				A: &(&struct{ x int32 }{56}).x,
+			},
+		},
+		Keys: []string{
+			"aaa",
+			"bbb",
+		},
+		Values: map[int32]*BaseElem{
+			12: &BaseElem{
+				A: &(&struct{ x int32 }{34}).x,
+			},
+		},
+	}
+}
+
+type SonicImpl struct{}
+
+func (s *SonicImpl) GenericCall(ctx context.Context, method string, request interface{}) (response interface{}, err error) {
+	buf := request.(string)
+	rpcinfo := rpcinfo.GetRPCInfo(ctx)
+	fmt.Printf("Method from Ctx: %s\n", rpcinfo.Invocation().MethodName())
+	fmt.Printf("Recv: %v\n", buf)
+	fmt.Printf("Method: %s\n", method)
+	resp := NewGenericResponse()
+	byteResp, err := json.Marshal(resp)
+	if err != nil {
+		return nil, err
+	}
+	return string(byteResp), nil
+}
+
 // GenericServiceImpl ...
 type GenericServiceImpl struct{}
 

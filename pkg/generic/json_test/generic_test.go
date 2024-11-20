@@ -21,6 +21,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"github.com/cloudwego/kitex/pkg/generic/json_test/kitex_gen/kitex/test/server/stservice"
 	"math"
 	"net"
 	"reflect"
@@ -58,6 +59,25 @@ func TestRun(t *testing.T) {
 	t.Run("TestThriftBase64BinaryEcho", testThriftBase64BinaryEcho)
 	t.Run("TestRegression", testRegression)
 	t.Run("TestParseModeWithDynamicGo", testParseModeWithDynamicGo)
+}
+
+func TestSonic(t *testing.T) {
+	addr := test.GetLocalAddress()
+	//svr := initThriftServer(t, addr, new(SonicImpl), "./idl/sonic.thrift", nil, nil, false)
+	address, _ := net.ResolveTCPAddr("tcp", addr)
+	svr := stservice.NewServer(new(KitexHandler), server.WithServiceAddr(address))
+	go func() {
+		svr.Run()
+	}()
+
+	cli := initThriftClient(transport.TTHeader, t, addr, "./idl/sonic.thrift", nil, nil, false)
+	resp, err := cli.GenericCall(context.Background(), "testGeneric", reqMsg)
+	test.Assert(t, err == nil, err)
+	respStr, ok := resp.(string)
+	fmt.Println(respStr)
+	test.Assert(t, ok)
+
+	svr.Stop()
 }
 
 func testThrift(t *testing.T) {
@@ -615,7 +635,7 @@ func initThriftServer(t *testing.T, address string, handler generic.Service, idl
 	} else {
 		p, err = generic.NewThriftFileProvider(idlPath)
 	}
-	test.Assert(t, err == nil)
+	test.Assert(t, err == nil, err)
 	g, err := generic.JSONThriftGeneric(p, opts...)
 	test.Assert(t, err == nil)
 	if base64Binary != nil {

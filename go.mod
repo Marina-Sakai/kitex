@@ -9,7 +9,8 @@ require (
 	github.com/cloudwego/dynamicgo v0.4.6-0.20241115162834-0e99bc39b128
 	github.com/cloudwego/fastpb v0.0.5
 	github.com/cloudwego/frugal v0.2.0
-	github.com/cloudwego/gopkg v0.1.2
+	github.com/cloudwego/gopkg v0.1.3-0.20241115063537-a218fe69d609
+	github.com/cloudwego/kitex/pkg/protocol/bthrift v0.0.0-20241120072630-95f6ac3437dd
 	github.com/cloudwego/localsession v0.1.1
 	github.com/cloudwego/netpoll v0.6.4
 	github.com/cloudwego/runtimex v0.1.0
@@ -28,6 +29,7 @@ require (
 )
 
 require (
+	github.com/apache/thrift v0.13.0 // indirect
 	github.com/bytedance/sonic/loader v0.2.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
@@ -47,3 +49,5 @@ require (
 	golang.org/x/arch v0.2.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 )
+
+replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
